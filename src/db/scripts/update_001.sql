@@ -1,4 +1,4 @@
-create table if not exists items (
+create table if not exists rabbit (
    id serial primary key not null,
-   name varchar(2000)
+   created_date date
 );
