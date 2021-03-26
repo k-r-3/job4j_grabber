@@ -14,8 +14,8 @@ import static org.quartz.SimpleScheduleBuilder.*;
 
 public class AlertRabbit {
     public static void main(String[] args) {
-        Connection connect;
         try {
+            Connection connect;
             Properties prop = new Properties();
             try (InputStream in = AlertRabbit.class.getClassLoader()
                     .getResourceAsStream("rabbit.properties")) {
@@ -25,6 +25,7 @@ public class AlertRabbit {
                         prop.getProperty("url"),
                         prop.getProperty("username"),
                         prop.getProperty("password"));
+                connect.close();
             }
             List<Long> store = new ArrayList<>();
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
