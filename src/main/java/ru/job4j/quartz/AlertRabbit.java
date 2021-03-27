@@ -25,7 +25,6 @@ public class AlertRabbit {
                         prop.getProperty("url"),
                         prop.getProperty("username"),
                         prop.getProperty("password"));
-                connect.close();
             }
             List<Long> store = new ArrayList<>();
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
