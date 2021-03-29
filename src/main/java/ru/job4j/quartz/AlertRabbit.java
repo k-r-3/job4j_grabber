@@ -2,6 +2,8 @@ package ru.job4j.quartz;
 
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,18 +16,18 @@ import static org.quartz.SimpleScheduleBuilder.*;
 
 public class AlertRabbit {
     public static void main(String[] args) {
-        try {
-            Connection connect;
-            Properties prop = new Properties();
-            try (InputStream in = AlertRabbit.class.getClassLoader()
-                    .getResourceAsStream("rabbit.properties")) {
-                prop.load(in);
-                Class.forName(prop.getProperty("driver"));
-                connect = DriverManager.getConnection(
-                        prop.getProperty("url"),
-                        prop.getProperty("username"),
-                        prop.getProperty("password"));
-            }
+        Properties prop = new Properties();
+        try (InputStream in = AlertRabbit.class.getClassLoader()
+                .getResourceAsStream("rabbit.properties")) {
+            prop.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try (Connection connect = DriverManager.getConnection(
+                prop.getProperty("url"),
+                prop.getProperty("username"),
+                prop.getProperty("password"))) {
+            Class.forName(prop.getProperty("driver"));
             List<Long> store = new ArrayList<>();
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.start();
@@ -68,7 +70,8 @@ public class AlertRabbit {
                 Date date = new Date(store.get(store.size() - 1));
                 stat.setDate(1, date);
                 stat.execute();
-            } catch (SQLException e) {
+                Thread.sleep(5000);
+            } catch (SQLException | InterruptedException e) {
                 e.printStackTrace();
             }
 
