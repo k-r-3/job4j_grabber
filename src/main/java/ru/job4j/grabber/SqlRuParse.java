@@ -44,7 +44,7 @@ public class SqlRuParse implements Parse {
                 doc = Jsoup.connect(path).get();
                 pageId++;
             }
-        }catch(IOException e) {
+        } catch (IOException e) {
             LOG.error("parse exception", e);
         }
         return posts;
@@ -58,6 +58,7 @@ public class SqlRuParse implements Parse {
 
     public static void main(String[] args) {
         System.out.println(new SqlRuParse().list("https://www.sql.ru/forum/job-offers"));
-        System.out.println(new SqlRuParse().detail("https://www.sql.ru/forum/1329807/sql-razrabotchik"));
+        System.out.println(new SqlRuParse()
+                .detail("https://www.sql.ru/forum/1329807/sql-razrabotchik"));
     }
 }

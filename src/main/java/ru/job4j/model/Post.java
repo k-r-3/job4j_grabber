@@ -40,7 +40,7 @@ public class Post {
 
     @Override
     public String toString() {
-        return post + "\n" + date ;
+        return post + "\n" + date;
     }
 
     public Post parseDetails(String url) {
