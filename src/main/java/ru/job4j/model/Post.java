@@ -31,7 +31,6 @@ public class Post {
         return date;
     }
 
-
     public void parseDetails(String url) {
         SqlRuDateTimeParser parser = new SqlRuDateTimeParser();
         try {
@@ -48,7 +47,8 @@ public class Post {
 
     public static void main(String[] args) {
         Post post = new Post();
-        post.parseDetails("https://www.sql.ru/forum/1325330/lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t");
+        post.parseDetails("https://www.sql.ru/forum/1325330"
+                + "/lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t");
         System.out.println(post.getPost());
         System.out.println(post.getDate());
     }
