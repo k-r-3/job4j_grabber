@@ -70,8 +70,7 @@ public class AlertRabbit {
                 Date date = new Date(store.get(store.size() - 1));
                 stat.setDate(1, date);
                 stat.execute();
-                Thread.sleep(5000);
-            } catch (SQLException | InterruptedException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
 
