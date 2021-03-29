@@ -15,6 +15,13 @@ public class Post {
     private String post;
     private String date;
 
+    public Post(String post, String date) {
+        this.post = post;
+        this.date = date;
+    }
+
+    public Post() { }
+
     public void setPost(String post) {
         this.post = post;
     }
@@ -31,7 +38,12 @@ public class Post {
         return date;
     }
 
-    public void parseDetails(String url) {
+    @Override
+    public String toString() {
+        return post + "\n" + date ;
+    }
+
+    public Post parseDetails(String url) {
         SqlRuDateTimeParser parser = new SqlRuDateTimeParser();
         try {
             Document doc = Jsoup.connect(url).get();
@@ -42,7 +54,7 @@ public class Post {
         } catch (IOException | ParseException e) {
             LOG.error("parse exception", e);
         }
-
+        return this;
     }
 
     public static void main(String[] args) {
