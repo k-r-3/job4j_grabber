@@ -42,32 +42,39 @@ public class PsqlStore implements Store, AutoCloseable {
         }
     }
 
-    public void setId(Post post) {
-        try (PreparedStatement idStat = cnn
-                .prepareStatement("select p.id from post p where p.name = ?")) {
-            idStat.setString(1, post.getName());
-            try (ResultSet result = idStat.executeQuery()) {
-                if (result.next()) {
-                    post.setId(result.getInt("id"));
-                    posts.add(post);
-                }
-            }
-        } catch (SQLException e) {
-            LOG.error("set id exception", e);
-        }
-    }
-
     @Override
     public List<Post> getAll() {
-        return posts;
+        return select("select * from post");
     }
 
     @Override
     public Post findById(String id) {
-        return posts.stream()
-                .filter(p -> String.valueOf(p.getId()).equals(id))
-                .findFirst()
-                .get();
+        try {
+        return select("select * from post p where p.id =" + id).get(0);
+        } catch (IndexOutOfBoundsException e) {
+            LOG.error("post with specified id not found", e);
+        }
+        return null;
+    }
+
+    private List<Post> select(String query) {
+        List<Post> posts = new ArrayList<>();
+        try (PreparedStatement stat = cnn.prepareStatement(query)) {
+            try (ResultSet result = stat.executeQuery()) {
+                while (result.next()) {
+                    Post post = new Post();
+                    post.setId(result.getInt("id"));
+                    post.setName(result.getString("name"));
+                    post.setPost(result.getString("text"));
+                    post.setLink(result.getString("link"));
+                    post.setDate(result.getString("created"));
+                    posts.add(post);
+                }
+            }
+        } catch (SQLException e) {
+            LOG.error("select exception", e);
+        }
+        return posts;
     }
 
     @Override
@@ -88,10 +95,9 @@ public class PsqlStore implements Store, AutoCloseable {
             List<Post> posts = parser.fullPost("https://www.sql.ru/forum/job-offers/1");
             for (Post post : posts) {
                 store.save(post);
-                store.setId(post);
             }
             System.out.println(store.getAll());
-            System.out.println(store.findById("2"));
+            System.out.println(store.findById("262"));
         }
     }
 }
