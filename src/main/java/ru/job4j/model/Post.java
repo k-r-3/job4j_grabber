@@ -1,26 +1,23 @@
 package ru.job4j.model;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-import ru.job4j.grabber.utils.SqlRuDateTimeParser;
-
-import java.io.IOException;
-import java.text.ParseException;
-
 public class Post {
-    static final Logger LOG = LoggerFactory.getLogger(Post.class.getName());
+    private int id;
+    private String name;
+    private String link;
     private String post;
     private String date;
 
-    public Post(String post, String date) {
-        this.post = post;
-        this.date = date;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public Post() { }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
 
     public void setPost(String post) {
         this.post = post;
@@ -28,6 +25,18 @@ public class Post {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLink() {
+        return link;
     }
 
     public String getPost() {
@@ -40,28 +49,10 @@ public class Post {
 
     @Override
     public String toString() {
-        return post + "\n" + date;
-    }
-
-    public Post parseDetails(String url) {
-        SqlRuDateTimeParser parser = new SqlRuDateTimeParser();
-        try {
-            Document doc = Jsoup.connect(url).get();
-            Elements body = doc.select(".msgBody");
-            setPost(body.get(1).text());
-            Elements date = doc.select(".msgFooter");
-            setDate(parser.parse(date.first().text()));
-        } catch (IOException | ParseException e) {
-            LOG.error("parse exception", e);
-        }
-        return this;
-    }
-
-    public static void main(String[] args) {
-        Post post = new Post();
-        post.parseDetails("https://www.sql.ru/forum/1325330"
-                + "/lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t");
-        System.out.println(post.getPost());
-        System.out.println(post.getDate());
+        return id + "\n"
+                + name + "\n"
+                + link + "\n"
+                + post + "\n"
+                + date + "\n";
     }
 }

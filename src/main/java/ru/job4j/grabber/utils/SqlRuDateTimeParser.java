@@ -42,4 +42,9 @@ public class SqlRuDateTimeParser implements DateTimeParser {
         }
         return SDF.parse(parse).toString();
     }
+
+    public static void main(String[] args) throws ParseException {
+        SqlRuDateTimeParser p = new SqlRuDateTimeParser();
+        System.out.println(p.parse("12 мар 21, 14:23"));
+    }
 }
