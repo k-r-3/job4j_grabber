@@ -13,7 +13,6 @@ import java.util.Properties;
 public class PsqlStore implements Store, AutoCloseable {
     static final Logger LOG = LoggerFactory.getLogger(PsqlStore.class.getName());
     private Connection cnn;
-    private List<Post> posts = new ArrayList<>();
 
     public PsqlStore(Properties cfg) {
         try {
@@ -92,7 +91,7 @@ public class PsqlStore implements Store, AutoCloseable {
         }
         try (PsqlStore store = new PsqlStore(prop)) {
             SqlRuParse parser = new SqlRuParse();
-            List<Post> posts = parser.fullPost("https://www.sql.ru/forum/job-offers/1");
+            List<Post> posts = parser.list("https://www.sql.ru/forum/job-offers/1");
             for (Post post : posts) {
                 store.save(post);
             }

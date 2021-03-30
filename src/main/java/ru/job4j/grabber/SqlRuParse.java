@@ -33,7 +33,9 @@ public class SqlRuParse implements Parse {
                     Post post = new Post();
                     Element href = td.child(0);
                     post.setName(href.text());
-                    post.setLink(href.attr("href"));
+                    String postLink = href.attr("href");
+                    post.setLink(postLink);
+                    post.setPost(detail(postLink).getPost());
                     Element date = styleRow.get(dateId);
                     post.setDate(date.text());
                     dateId += 2;
