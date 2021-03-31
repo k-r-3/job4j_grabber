@@ -6,8 +6,12 @@ import ru.job4j.model.Post;
 
 import java.io.InputStream;
 import java.sql.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 public class PsqlStore implements Store, AutoCloseable {
@@ -34,7 +38,11 @@ public class PsqlStore implements Store, AutoCloseable {
             stat.setString(1, post.getName());
             stat.setString(2, post.getPost());
             stat.setString(3, post.getLink());
-            stat.setString(4, post.getDate());
+            stat.setTimestamp(4, Timestamp.valueOf(String.valueOf(String
+                    .format("%s-%s-%s %s:%s:%s", post.getDate().getYear(),
+                            post.getDate().getMonthValue(),
+                            post.getDate().getDayOfMonth(), post.getDate().getHour(),
+                            post.getDate().getMinute(), post.getDate().getSecond()))));
             stat.execute();
         } catch (SQLException e) {
             LOG.error("insert exception", e);
@@ -57,6 +65,8 @@ public class PsqlStore implements Store, AutoCloseable {
     }
 
     private List<Post> select(String query) {
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofPattern("y-MM-dd HH:mm:ss", Locale.ENGLISH);
         List<Post> posts = new ArrayList<>();
         try (PreparedStatement stat = cnn.prepareStatement(query)) {
             try (ResultSet result = stat.executeQuery()) {
@@ -66,7 +76,7 @@ public class PsqlStore implements Store, AutoCloseable {
                     post.setName(result.getString("name"));
                     post.setPost(result.getString("text"));
                     post.setLink(result.getString("link"));
-                    post.setDate(result.getString("created"));
+                    post.setDate(LocalDateTime.parse((result.getString("created")), formatter));
                     posts.add(post);
                 }
             }

@@ -11,12 +11,19 @@ import ru.job4j.model.Post;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 public class SqlRuParse implements Parse {
     static final Logger LOG = LoggerFactory.getLogger(SqlRuParse.class.getName());
+    private DateTimeFormatter formatter = DateTimeFormatter
+            .ofPattern("E MMM dd HH:mm:ss z y", Locale.ENGLISH);
+    private SqlRuDateTimeParser parser = new SqlRuDateTimeParser();
 
     @Override
     public List<Post> list(String link) {
@@ -37,7 +44,7 @@ public class SqlRuParse implements Parse {
                     post.setLink(postLink);
                     post.setPost(detail(postLink).getPost());
                     Element date = styleRow.get(dateId);
-                    post.setDate(date.text());
+                    post.setDate(LocalDateTime.parse(parser.parse(date.text()), formatter));
                     dateId += 2;
                     posts.add(post);
                 }
@@ -49,7 +56,7 @@ public class SqlRuParse implements Parse {
                 doc = Jsoup.connect(path).get();
                 pageId++;
             }
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             LOG.error("parse exception", e);
         }
         return posts;
@@ -58,7 +65,6 @@ public class SqlRuParse implements Parse {
     @Override
     public Post detail(String link) {
         Post post = new Post();
-        SqlRuDateTimeParser parser = new SqlRuDateTimeParser();
         try {
             Document doc = Jsoup.connect(link).get();
             Elements body = doc.select(".msgBody");
@@ -77,7 +83,8 @@ public class SqlRuParse implements Parse {
             }
             post.setPost(msg.toString());
             Elements date = doc.select(".msgFooter");
-            post.setDate(parser.parse(date.first().text()));
+            SimpleDateFormat sdf = new SimpleDateFormat("d MMM yy, HH:mm");
+            post.setDate(LocalDateTime.parse(parser.parse(date.first().text()), formatter));
         } catch (IOException | ParseException e) {
             LOG.error("parse exception", e);
         }

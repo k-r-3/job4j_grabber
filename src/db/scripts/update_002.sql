@@ -3,5 +3,5 @@ create table if not exists post(
 	name varchar(255),
 	text text,
 	link text unique,
-	created text
+	created timestamp
 );

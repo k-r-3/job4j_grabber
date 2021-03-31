@@ -1,11 +1,14 @@
 package ru.job4j.model;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+
 public class Post {
     private int id;
     private String name;
     private String link;
     private String post;
-    private String date;
+    private LocalDateTime date;
 
     public void setId(int id) {
         this.id = id;
@@ -23,7 +26,7 @@ public class Post {
         this.post = post;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -43,7 +46,7 @@ public class Post {
         return post;
     }
 
-    public String getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
