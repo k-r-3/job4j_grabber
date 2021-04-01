@@ -68,7 +68,7 @@ public class Grabber implements Grab {
         new Thread(() -> {
             try (ServerSocket server = new ServerSocket(Integer.parseInt(
             cfg.getProperty("port")))) {
-                    while(!server.isClosed()) {
+                    while (!server.isClosed()) {
                         Socket socket = server.accept();
                         try (OutputStream out = socket.getOutputStream()) {
                             out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());

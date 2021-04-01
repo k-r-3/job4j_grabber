@@ -15,38 +15,38 @@ import static org.quartz.TriggerBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.*;
 
 public class AlertRabbit {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Properties prop = new Properties();
         try (InputStream in = AlertRabbit.class.getClassLoader()
                 .getResourceAsStream("rabbit.properties")) {
             prop.load(in);
-            try (Connection connect = DriverManager.getConnection(
-                    prop.getProperty("url"),
-                    prop.getProperty("username"),
-                    prop.getProperty("password"))) {
-                Class.forName(prop.getProperty("driver"));
-                List<Long> store = new ArrayList<>();
-                Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-                scheduler.start();
-                JobDataMap data = new JobDataMap();
-                data.put("store", store);
-                data.put("connect", connect);
-                JobDetail job = newJob(Rabbit.class)
-                        .usingJobData(data)
-                        .build();
-                SimpleScheduleBuilder times = simpleSchedule()
-                        .withIntervalInSeconds(Integer.parseInt(
-                                prop.getProperty("rabbit.interval")))
-                        .repeatForever();
-                Trigger trigger = newTrigger()
-                        .startNow()
-                        .withSchedule(times)
-                        .build();
-                scheduler.scheduleJob(job, trigger);
-                Thread.sleep(10000);
-                scheduler.shutdown();
-                System.out.println(store);
-            }
+        }
+        try (Connection connect = DriverManager.getConnection(
+                prop.getProperty("url"),
+                prop.getProperty("username"),
+                prop.getProperty("password"))) {
+            Class.forName(prop.getProperty("driver"));
+            List<Long> store = new ArrayList<>();
+            Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+            scheduler.start();
+            JobDataMap data = new JobDataMap();
+            data.put("store", store);
+            data.put("connect", connect);
+            JobDetail job = newJob(Rabbit.class)
+                    .usingJobData(data)
+                    .build();
+            SimpleScheduleBuilder times = simpleSchedule()
+                    .withIntervalInSeconds(Integer.parseInt(
+                            prop.getProperty("rabbit.interval")))
+                    .repeatForever();
+            Trigger trigger = newTrigger()
+                    .startNow()
+                    .withSchedule(times)
+                    .build();
+            scheduler.scheduleJob(job, trigger);
+            Thread.sleep(10000);
+            scheduler.shutdown();
+            System.out.println(store);
         } catch (Exception e) {
             e.printStackTrace();
         }
