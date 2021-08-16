@@ -41,7 +41,6 @@ public class PsqlStoreTest {
         assertTrue(store.getAll().size() == 1);
     }
 
-
     @Test
     public void selectAll() {
         PsqlStore store = new PsqlStore(prop);
