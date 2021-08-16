@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Properties;
 
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
 public class PsqlStoreTest {
@@ -42,19 +41,6 @@ public class PsqlStoreTest {
         assertTrue(store.getAll().size() == 1);
     }
 
-    @Test
-    public void findById() {
-        Post post = new Post();
-        post.setName("name");
-        post.setPost("post");
-        post.setLink("http://link.ru");
-        post.setDate(LocalDateTime.now());
-        PsqlStore store = new PsqlStore(prop);
-        store.sqlRollback();
-        store.save(post);
-        Post returned = store.getAll().get(0);
-        assertTrue(Objects.nonNull(store.findById(String.valueOf(returned.getId()))));
-    }
 
     @Test
     public void selectAll() {
