@@ -7,7 +7,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.job4j.grabber.utils.SqlRuDateTimeParser;
-import ru.job4j.model.Post;
+import ru.job4j.grabber.model.Post;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -91,17 +91,9 @@ public class SqlRuParse implements Parse {
         return post;
     }
 
-    public List<Post> fullPost(String link) {
-        List<Post> posts = list(link);
-        for (Post post : posts) {
-            post.setPost(detail(post.getLink()).getPost());
-        }
-        return posts;
-    }
-
     public static void main(String[] args) {
-//        System.out.println(new SqlRuParse().list("https://www.sql.ru/forum/job-offers"));
-        System.out.println(new SqlRuParse()
-                .detail("https://www.sql.ru/forum/1329807/sql-razrabotchik"));
+        System.out.println(new SqlRuParse().list("https://www.sql.ru/forum/job-offers"));
+//        System.out.println(new SqlRuParse()
+//                .detail("https://www.sql.ru/forum/1329807/sql-razrabotchik"));
     }
 }

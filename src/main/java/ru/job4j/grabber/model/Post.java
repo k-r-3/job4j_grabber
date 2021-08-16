@@ -1,6 +1,5 @@
-package ru.job4j.model;
+package ru.job4j.grabber.model;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 
 public class Post {

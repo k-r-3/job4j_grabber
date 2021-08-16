@@ -2,11 +2,10 @@ package ru.job4j.grabber;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.job4j.model.Post;
+import ru.job4j.grabber.model.Post;
 
 import java.io.InputStream;
 import java.sql.*;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -19,6 +18,18 @@ public class PsqlStore implements Store, AutoCloseable {
     private Connection cnn;
 
     public PsqlStore(Properties cfg) {
+        init(cfg);
+    }
+
+    public void sqlRollback() {
+        try {
+            cnn = ConnectionRollback.create(cnn);
+        } catch (SQLException e) {
+            LOG.error("Connection Rollback create exception", e);
+        }
+    }
+
+    private void init(Properties cfg) {
         try {
             Class.forName(cfg.getProperty("jdbc.driver"));
             cnn = DriverManager.getConnection(
@@ -57,7 +68,7 @@ public class PsqlStore implements Store, AutoCloseable {
     @Override
     public Post findById(String id) {
         try {
-        return select("select * from post p where p.id =" + id).get(0);
+            return select("select * from post p where p.id =" + id).get(0);
         } catch (IndexOutOfBoundsException e) {
             LOG.error("post with specified id not found", e);
         }
@@ -90,23 +101,6 @@ public class PsqlStore implements Store, AutoCloseable {
     public void close() throws Exception {
         if (cnn != null) {
             cnn.close();
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        Properties prop = new Properties();
-        try (InputStream in = PsqlStore.class.getClassLoader()
-                .getResourceAsStream("app.properties")) {
-            prop.load(in);
-        }
-        try (PsqlStore store = new PsqlStore(prop)) {
-            SqlRuParse parser = new SqlRuParse();
-            List<Post> posts = parser.list("https://www.sql.ru/forum/job-offers/1");
-            for (Post post : posts) {
-                store.save(post);
-            }
-            System.out.println(store.getAll());
-            System.out.println(store.findById("262"));
         }
     }
 }
