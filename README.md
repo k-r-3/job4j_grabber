@@ -29,3 +29,6 @@ To app boot is necessary start ru/job4j/grabber/Grabber.java
 To change period for parse You might edit value of key 'time'
 in src/main/resources/app.properties
 </p>
+<h3>Contact</h3>
+<p>If You have any question, please contact me:</p>
+<p>https://t.me/roman_kozlov</p>
